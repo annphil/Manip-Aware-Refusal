@@ -5,3 +5,5 @@ Miniconda3-latest-Linux-x86_64.sh
 *.bin
 experiments/technique_vulnerability/roberta_ft/
 experiments/manipulation_detection/roberta_ft/
+experiments/manipulation_detection/llama_ft/
+experiments/technique_vulnerability/llama_ft/
