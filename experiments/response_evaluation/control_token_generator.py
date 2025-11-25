@@ -47,7 +47,11 @@ class ControlTokenGenerator:
             torch_dtype=torch.float16,    
             device_map="auto"    
         )    
-        self.generation_model.eval()    
+        self.generation_model.eval()   
+
+        print(f"Generation model loaded: {generation_model_name}")  
+        print(f"Generation model config: {self.generation_model.config.model_type}")  
+        print(f"Generation tokenizer vocab size: {len(self.generation_tokenizer)}")  
             
         print("Models loaded successfully!") 
       

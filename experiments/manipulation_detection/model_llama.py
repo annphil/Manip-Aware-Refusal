@@ -105,7 +105,7 @@ class LlamaModel:
             else:
                 logging.info('Error: response of Llama is neither yes nor no.')
                 return -1
-
+    ''''''
     def fewshot_prompting(self, manip_examples, nonmanip_examples, dialogue):
         conversation = []
         total_example_num = len(manip_examples) + len(nonmanip_examples)

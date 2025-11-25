@@ -45,6 +45,12 @@ def run_evaluation(dataset_path, output_path, detection_model="roberta_ft/mental
     total_samples = len(dialogues)  
     manipulation_detected_count = 0  
     no_manipulation_count = 0  
+
+    with open(output_path, 'w', newline='', encoding='utf-8') as f:  
+        writer = csv.DictWriter(f, fieldnames=['dialogue', 'ground_truth_label', 'predicted_label',   
+                                                'baseline_response', 'control_response',   
+                                                'cosine_similarity', 'bert_precision', 'bert_recall', 'bert_f1'])  
+        writer.writeheader()  
       
     print("Running evaluation...")  
     for idx, dialogue in enumerate(tqdm(dialogues)):  
@@ -83,6 +89,10 @@ def run_evaluation(dataset_path, output_path, detection_model="roberta_ft/mental
               
             # Generate baseline response only (no similarity metrics)  
             baseline_response = generator.generate_baseline_response(dialogue)  
+
+            # with open(output_path, 'a', newline='', encoding='utf-8') as f:  
+            #     writer = csv.DictWriter(f, fieldnames=result_dict.keys())  
+            #     writer.writerow(result_dict)
               
             results.append({  
                 'dialogue': dialogue,  

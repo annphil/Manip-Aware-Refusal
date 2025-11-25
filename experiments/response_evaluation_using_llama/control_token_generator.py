@@ -133,11 +133,11 @@ class ControlTokenGenerator:
         """Generate baseline response without control token."""    
         next_speaker = self.determine_next_speaker(dialogue)    
 
-        # Pre-truncate dialogue  
-        dialogue_tokens = self.tokenizer.encode(dialogue, add_special_tokens=False)  
-        if len(dialogue_tokens) > 1500:  
-            dialogue_tokens = dialogue_tokens[:1500]  
-            dialogue = self.tokenizer.decode(dialogue_tokens, skip_special_tokens=True)  
+        # # Pre-truncate dialogue  
+        # dialogue_tokens = self.tokenizer.encode(dialogue, add_special_tokens=False)  
+        # if len(dialogue_tokens) > 1500:  
+        #     dialogue_tokens = dialogue_tokens[:1500]  
+        #     dialogue = self.tokenizer.decode(dialogue_tokens, skip_special_tokens=True)  
           
         prompt = f"[INST] You are {next_speaker} in the following conversation. Generate a natural response.\n\nConversation:\n{dialogue}\n\n{next_speaker}: [/INST]"    
           
