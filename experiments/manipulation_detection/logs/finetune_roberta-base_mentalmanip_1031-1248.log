@@ -1,0 +1,26 @@
+2025-10-31 12:48:19,363 INFO     ----------Arguments-----------
+2025-10-31 12:48:19,363 INFO     model = roberta-base
+2025-10-31 12:48:19,363 INFO     mode = train
+2025-10-31 12:48:19,363 INFO     temp = 0.1
+2025-10-31 12:48:19,363 INFO     top_p = 0.5
+2025-10-31 12:48:19,363 INFO     penal = 0.0
+2025-10-31 12:48:19,363 INFO     log_dir = ./logs
+2025-10-31 12:48:19,363 INFO     epoch = 3
+2025-10-31 12:48:19,363 INFO     train_batch_size = 8
+2025-10-31 12:48:19,363 INFO     valid_batch_size = 8
+2025-10-31 12:48:19,363 INFO     lr = 0.0001
+2025-10-31 12:48:19,363 INFO     train_data = mentalmanip
+2025-10-31 12:48:19,363 INFO     eval_data = mentalmanip_con
+2025-10-31 12:48:19,363 INFO     ------------------------------
+
+2025-10-31 12:48:19,382 INFO     -----MentalManip Dataset Information-----
+2025-10-31 12:48:19,383 INFO     Total size = 2915, manipulative:non-manipulative ratio = 2.242
+2025-10-31 12:48:19,383 INFO     Train size = 1749, manipulative:non-manipulative ratio = 2.263
+2025-10-31 12:48:19,384 INFO     Valid size = 583, manipulative:non-manipulative ratio = 2.257
+2025-10-31 12:48:19,384 INFO     Test size = 583, manipulative:non-manipulative ratio = 2.168
+2025-10-31 12:48:19,384 INFO     
+2025-10-31 12:48:19,384 INFO     -----Finetuning Data Size Information-----
+2025-10-31 12:48:19,384 INFO     Train size: 1749
+2025-10-31 12:48:19,384 INFO     Valid size: 583
+2025-10-31 12:48:19,384 INFO     Test size: 583
+2025-10-31 12:48:19,384 INFO     

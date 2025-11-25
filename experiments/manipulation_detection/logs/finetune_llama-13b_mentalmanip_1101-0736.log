@@ -1,0 +1,26 @@
+2025-11-01 07:36:34,168 INFO     ----------Arguments-----------
+2025-11-01 07:36:34,168 INFO     model = llama-13b
+2025-11-01 07:36:34,168 INFO     mode = train
+2025-11-01 07:36:34,168 INFO     temp = 0.1
+2025-11-01 07:36:34,168 INFO     top_p = 0.5
+2025-11-01 07:36:34,168 INFO     penal = 0.0
+2025-11-01 07:36:34,168 INFO     log_dir = ./logs
+2025-11-01 07:36:34,168 INFO     epoch = 3
+2025-11-01 07:36:34,168 INFO     train_batch_size = 8
+2025-11-01 07:36:34,168 INFO     valid_batch_size = 8
+2025-11-01 07:36:34,168 INFO     lr = 0.0001
+2025-11-01 07:36:34,168 INFO     train_data = mentalmanip
+2025-11-01 07:36:34,168 INFO     eval_data = mentalmanip_con
+2025-11-01 07:36:34,168 INFO     ------------------------------
+
+2025-11-01 07:36:34,187 INFO     -----MentalManip Dataset Information-----
+2025-11-01 07:36:34,188 INFO     Total size = 2915, manipulative:non-manipulative ratio = 2.242
+2025-11-01 07:36:34,189 INFO     Train size = 1749, manipulative:non-manipulative ratio = 2.263
+2025-11-01 07:36:34,189 INFO     Valid size = 583, manipulative:non-manipulative ratio = 2.257
+2025-11-01 07:36:34,189 INFO     Test size = 583, manipulative:non-manipulative ratio = 2.168
+2025-11-01 07:36:34,189 INFO     
+2025-11-01 07:36:34,189 INFO     -----Finetuning Data Size Information-----
+2025-11-01 07:36:34,189 INFO     Train size: 1749
+2025-11-01 07:36:34,189 INFO     Valid size: 583
+2025-11-01 07:36:34,189 INFO     Test size: 583
+2025-11-01 07:36:34,189 INFO     

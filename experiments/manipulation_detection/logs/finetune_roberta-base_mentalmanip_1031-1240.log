@@ -1,0 +1,15 @@
+2025-10-31 12:40:53,883 INFO     ----------Arguments-----------
+2025-10-31 12:40:53,883 INFO     model = roberta-base
+2025-10-31 12:40:53,883 INFO     mode = train
+2025-10-31 12:40:53,883 INFO     temp = 0.1
+2025-10-31 12:40:53,883 INFO     top_p = 0.5
+2025-10-31 12:40:53,883 INFO     penal = 0.0
+2025-10-31 12:40:53,883 INFO     log_dir = ./logs
+2025-10-31 12:40:53,883 INFO     epoch = 3
+2025-10-31 12:40:53,883 INFO     train_batch_size = 8
+2025-10-31 12:40:53,883 INFO     valid_batch_size = 8
+2025-10-31 12:40:53,883 INFO     lr = 0.0001
+2025-10-31 12:40:53,883 INFO     train_data = mentalmanip
+2025-10-31 12:40:53,883 INFO     eval_data = mentalmanip_con
+2025-10-31 12:40:53,883 INFO     ------------------------------
+

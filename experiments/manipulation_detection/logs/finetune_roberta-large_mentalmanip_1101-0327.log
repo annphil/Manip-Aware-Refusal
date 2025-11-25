@@ -1,0 +1,61 @@
+2025-11-01 03:27:32,271 INFO     ----------Arguments-----------
+2025-11-01 03:27:32,271 INFO     model = roberta-large
+2025-11-01 03:27:32,271 INFO     mode = train
+2025-11-01 03:27:32,271 INFO     temp = 0.1
+2025-11-01 03:27:32,271 INFO     top_p = 0.5
+2025-11-01 03:27:32,271 INFO     penal = 0.0
+2025-11-01 03:27:32,271 INFO     log_dir = ./logs
+2025-11-01 03:27:32,271 INFO     epoch = 5
+2025-11-01 03:27:32,271 INFO     train_batch_size = 8
+2025-11-01 03:27:32,271 INFO     valid_batch_size = 8
+2025-11-01 03:27:32,271 INFO     lr = 0.0001
+2025-11-01 03:27:32,271 INFO     train_data = mentalmanip
+2025-11-01 03:27:32,271 INFO     eval_data = mentalmanip_con
+2025-11-01 03:27:32,271 INFO     ------------------------------
+
+2025-11-01 03:27:32,291 INFO     -----MentalManip Dataset Information-----
+2025-11-01 03:27:32,292 INFO     Total size = 2915, manipulative:non-manipulative ratio = 2.242
+2025-11-01 03:27:32,292 INFO     Train size = 1749, manipulative:non-manipulative ratio = 2.263
+2025-11-01 03:27:32,292 INFO     Valid size = 583, manipulative:non-manipulative ratio = 2.257
+2025-11-01 03:27:32,293 INFO     Test size = 583, manipulative:non-manipulative ratio = 2.168
+2025-11-01 03:27:32,293 INFO     
+2025-11-01 03:27:32,293 INFO     -----Finetuning Data Size Information-----
+2025-11-01 03:27:32,293 INFO     Train size: 1749
+2025-11-01 03:27:32,293 INFO     Valid size: 583
+2025-11-01 03:27:32,293 INFO     Test size: 583
+2025-11-01 03:27:32,293 INFO     
+2025-11-01 03:29:18,121 INFO     Epoch: 1
+2025-11-01 03:29:18,121 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 03:29:18,121 INFO     {'eval_loss': 0.6382145881652832, 'eval_precision': 0.7184643510054844, 'eval_recall': 0.9727722772277227, 'eval_accuracy': 0.7169811320754716, 'eval_f1': 0.7169811320754716, 'eval_micro_f1': 0.7169811320754716, 'eval_macro_f1': 0.5295282811239088, 'eval_confusion_matrix': [[25, 154], [11, 393]], 'eval_runtime': 9.6403, 'eval_samples_per_second': 60.475, 'eval_steps_per_second': 7.572, 'epoch': 1.0}
+2025-11-01 03:30:58,024 INFO     Epoch: 2
+2025-11-01 03:30:58,024 INFO     Best checkpoint: roberta_ft/mentalmanip/checkpoint-219, Best f1: 0.7169811320754716
+2025-11-01 03:30:58,024 INFO     {'eval_loss': 0.6489046812057495, 'eval_precision': 0.692967409948542, 'eval_recall': 1.0, 'eval_accuracy': 0.692967409948542, 'eval_f1': 0.692967409948542, 'eval_micro_f1': 0.692967409948542, 'eval_macro_f1': 0.40932117527862205, 'eval_confusion_matrix': [[0, 179], [0, 404]], 'eval_runtime': 9.7539, 'eval_samples_per_second': 59.771, 'eval_steps_per_second': 7.484, 'epoch': 2.0}
+2025-11-01 03:32:37,904 INFO     Epoch: 3
+2025-11-01 03:32:37,904 INFO     Best checkpoint: roberta_ft/mentalmanip/checkpoint-219, Best f1: 0.7169811320754716
+2025-11-01 03:32:37,904 INFO     {'eval_loss': 0.6421210169792175, 'eval_precision': 0.692967409948542, 'eval_recall': 1.0, 'eval_accuracy': 0.692967409948542, 'eval_f1': 0.692967409948542, 'eval_micro_f1': 0.692967409948542, 'eval_macro_f1': 0.40932117527862205, 'eval_confusion_matrix': [[0, 179], [0, 404]], 'eval_runtime': 9.8257, 'eval_samples_per_second': 59.334, 'eval_steps_per_second': 7.43, 'epoch': 3.0}
+2025-11-01 03:34:18,599 INFO     Epoch: 4
+2025-11-01 03:34:18,600 INFO     Best checkpoint: roberta_ft/mentalmanip/checkpoint-219, Best f1: 0.7169811320754716
+2025-11-01 03:34:18,600 INFO     {'eval_loss': 0.624502956867218, 'eval_precision': 0.692967409948542, 'eval_recall': 1.0, 'eval_accuracy': 0.692967409948542, 'eval_f1': 0.692967409948542, 'eval_micro_f1': 0.692967409948542, 'eval_macro_f1': 0.40932117527862205, 'eval_confusion_matrix': [[0, 179], [0, 404]], 'eval_runtime': 9.8757, 'eval_samples_per_second': 59.034, 'eval_steps_per_second': 7.392, 'epoch': 4.0}
+2025-11-01 03:35:59,757 INFO     Epoch: 5
+2025-11-01 03:35:59,757 INFO     Best checkpoint: roberta_ft/mentalmanip/checkpoint-219, Best f1: 0.7169811320754716
+2025-11-01 03:35:59,757 INFO     {'eval_loss': 0.6167891025543213, 'eval_precision': 0.692967409948542, 'eval_recall': 1.0, 'eval_accuracy': 0.692967409948542, 'eval_f1': 0.692967409948542, 'eval_micro_f1': 0.692967409948542, 'eval_macro_f1': 0.40932117527862205, 'eval_confusion_matrix': [[0, 179], [0, 404]], 'eval_runtime': 9.9141, 'eval_samples_per_second': 58.805, 'eval_steps_per_second': 7.363, 'epoch': 5.0}
+2025-11-01 03:36:04,072 INFO     Epoch: 5
+2025-11-01 03:36:04,072 INFO     Best checkpoint: roberta_ft/mentalmanip/checkpoint-219, Best f1: 0.7169811320754716
+2025-11-01 03:36:04,072 INFO     {'train_runtime': 500.1366, 'train_samples_per_second': 17.485, 'train_steps_per_second': 2.189, 'train_loss': 0.6411497351241439, 'epoch': 5.0}
+2025-11-01 03:36:04,605 INFO     
+2025-11-01 03:36:04,605 INFO     -----Test-----
+2025-11-01 03:36:14,334 INFO     Epoch: 5
+2025-11-01 03:36:14,335 INFO     Best checkpoint: roberta_ft/mentalmanip/checkpoint-219, Best f1: 0.7169811320754716
+2025-11-01 03:36:14,335 INFO     {'eval_loss': 0.6408365964889526, 'eval_precision': 0.7124542124542125, 'eval_recall': 0.974937343358396, 'eval_accuracy': 0.7135506003430532, 'eval_f1': 0.7135506003430532, 'eval_micro_f1': 0.7135506003430532, 'eval_macro_f1': 0.5338121573415691, 'eval_confusion_matrix': [[27, 157], [10, 389]], 'eval_runtime': 9.7285, 'eval_samples_per_second': 59.927, 'eval_steps_per_second': 7.504, 'epoch': 5.0}
+2025-11-01 03:36:14,335 INFO     eval_loss = 0.6408365964889526
+2025-11-01 03:36:14,335 INFO     eval_precision = 0.7124542124542125
+2025-11-01 03:36:14,335 INFO     eval_recall = 0.974937343358396
+2025-11-01 03:36:14,335 INFO     eval_accuracy = 0.7135506003430532
+2025-11-01 03:36:14,335 INFO     eval_f1 = 0.7135506003430532
+2025-11-01 03:36:14,335 INFO     eval_micro_f1 = 0.7135506003430532
+2025-11-01 03:36:14,335 INFO     eval_macro_f1 = 0.5338121573415691
+2025-11-01 03:36:14,335 INFO     eval_confusion_matrix = [[27, 157], [10, 389]]
+2025-11-01 03:36:14,335 INFO     eval_runtime = 9.7285
+2025-11-01 03:36:14,335 INFO     eval_samples_per_second = 59.927
+2025-11-01 03:36:14,335 INFO     eval_steps_per_second = 7.504
+2025-11-01 03:36:14,335 INFO     epoch = 5.0

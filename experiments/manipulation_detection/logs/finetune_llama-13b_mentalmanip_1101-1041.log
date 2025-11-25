@@ -1,0 +1,129 @@
+2025-11-01 10:41:11,888 INFO     ----------Arguments-----------
+2025-11-01 10:41:11,888 INFO     model = llama-13b
+2025-11-01 10:41:11,888 INFO     mode = train
+2025-11-01 10:41:11,889 INFO     temp = 0.1
+2025-11-01 10:41:11,889 INFO     top_p = 0.5
+2025-11-01 10:41:11,889 INFO     penal = 0.0
+2025-11-01 10:41:11,889 INFO     log_dir = ./logs
+2025-11-01 10:41:11,889 INFO     epoch = 3
+2025-11-01 10:41:11,889 INFO     train_batch_size = 8
+2025-11-01 10:41:11,889 INFO     valid_batch_size = 8
+2025-11-01 10:41:11,889 INFO     lr = 0.0001
+2025-11-01 10:41:11,889 INFO     train_data = mentalmanip
+2025-11-01 10:41:11,889 INFO     eval_data = mentalmanip_con
+2025-11-01 10:41:11,889 INFO     ------------------------------
+
+2025-11-01 10:41:12,038 INFO     -----MentalManip Dataset Information-----
+2025-11-01 10:41:12,038 INFO     Total size = 2915, manipulative:non-manipulative ratio = 2.242
+2025-11-01 10:41:12,039 INFO     Train size = 1749, manipulative:non-manipulative ratio = 2.263
+2025-11-01 10:41:12,039 INFO     Valid size = 583, manipulative:non-manipulative ratio = 2.257
+2025-11-01 10:41:12,039 INFO     Test size = 583, manipulative:non-manipulative ratio = 2.168
+2025-11-01 10:41:12,039 INFO     
+2025-11-01 10:41:12,040 INFO     -----Finetuning Data Size Information-----
+2025-11-01 10:41:12,040 INFO     Train size: 1749
+2025-11-01 10:41:12,040 INFO     Valid size: 583
+2025-11-01 10:41:12,040 INFO     Test size: 583
+2025-11-01 10:41:12,040 INFO     
+2025-11-01 10:41:48,423 INFO     Using "Manipulative" column for the answers.
+2025-11-01 10:41:48,451 INFO     Using "Manipulative" column for the answers.
+2025-11-01 10:41:48,493 INFO     Using "Manipulative" column for the answers.
+2025-11-01 10:43:01,753 INFO     Epoch: 0
+2025-11-01 10:43:01,754 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:43:01,754 INFO     {'loss': 5.1768, 'learning_rate': 0.0001, 'epoch': 0.09}
+2025-11-01 10:44:17,088 INFO     Epoch: 0
+2025-11-01 10:44:17,088 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:44:17,088 INFO     {'loss': 3.0049, 'learning_rate': 0.0001, 'epoch': 0.18}
+2025-11-01 10:45:20,447 INFO     Epoch: 0
+2025-11-01 10:45:20,447 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:45:20,447 INFO     {'loss': 0.6727, 'learning_rate': 0.0001, 'epoch': 0.27}
+2025-11-01 10:46:25,546 INFO     Epoch: 0
+2025-11-01 10:46:25,546 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:46:25,546 INFO     {'loss': 0.5596, 'learning_rate': 0.0001, 'epoch': 0.37}
+2025-11-01 10:47:24,909 INFO     Epoch: 0
+2025-11-01 10:47:24,909 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:47:24,909 INFO     {'loss': 0.3582, 'learning_rate': 0.0001, 'epoch': 0.46}
+2025-11-01 10:48:25,573 INFO     Epoch: 0
+2025-11-01 10:48:25,573 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:48:25,574 INFO     {'loss': 0.3518, 'learning_rate': 0.0001, 'epoch': 0.55}
+2025-11-01 10:49:32,992 INFO     Epoch: 0
+2025-11-01 10:49:32,992 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:49:32,992 INFO     {'loss': 0.3075, 'learning_rate': 0.0001, 'epoch': 0.64}
+2025-11-01 10:50:45,336 INFO     Epoch: 0
+2025-11-01 10:50:45,336 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:50:45,336 INFO     {'loss': 0.2863, 'learning_rate': 0.0001, 'epoch': 0.73}
+2025-11-01 10:52:17,101 INFO     Epoch: 0
+2025-11-01 10:52:17,101 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:52:17,102 INFO     {'loss': 0.2482, 'learning_rate': 0.0001, 'epoch': 0.82}
+2025-11-01 10:53:51,745 INFO     Epoch: 0
+2025-11-01 10:53:51,745 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:53:51,745 INFO     {'loss': 0.3187, 'learning_rate': 0.0001, 'epoch': 0.91}
+2025-11-01 10:55:03,845 INFO     Epoch: 1
+2025-11-01 10:55:03,845 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:55:03,845 INFO     {'loss': 0.2568, 'learning_rate': 0.0001, 'epoch': 1.0}
+2025-11-01 10:56:18,765 INFO     Epoch: 1
+2025-11-01 10:56:18,766 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:56:18,766 INFO     {'loss': 0.2564, 'learning_rate': 0.0001, 'epoch': 1.1}
+2025-11-01 10:57:26,115 INFO     Epoch: 1
+2025-11-01 10:57:26,115 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:57:26,115 INFO     {'loss': 0.2891, 'learning_rate': 0.0001, 'epoch': 1.19}
+2025-11-01 10:58:27,995 INFO     Epoch: 1
+2025-11-01 10:58:27,995 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:58:27,995 INFO     {'loss': 0.2676, 'learning_rate': 0.0001, 'epoch': 1.28}
+2025-11-01 10:59:53,065 INFO     Epoch: 1
+2025-11-01 10:59:53,065 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 10:59:53,065 INFO     {'loss': 0.2441, 'learning_rate': 0.0001, 'epoch': 1.37}
+2025-11-01 11:01:02,291 INFO     Epoch: 1
+2025-11-01 11:01:02,291 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:01:02,291 INFO     {'loss': 0.3149, 'learning_rate': 0.0001, 'epoch': 1.46}
+2025-11-01 11:02:23,931 INFO     Epoch: 1
+2025-11-01 11:02:23,931 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:02:23,931 INFO     {'loss': 0.271, 'learning_rate': 0.0001, 'epoch': 1.55}
+2025-11-01 11:03:39,133 INFO     Epoch: 1
+2025-11-01 11:03:39,133 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:03:39,133 INFO     {'loss': 0.2759, 'learning_rate': 0.0001, 'epoch': 1.64}
+2025-11-01 11:04:59,159 INFO     Epoch: 1
+2025-11-01 11:04:59,159 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:04:59,159 INFO     {'loss': 0.2507, 'learning_rate': 0.0001, 'epoch': 1.74}
+2025-11-01 11:06:03,638 INFO     Epoch: 1
+2025-11-01 11:06:03,639 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:06:03,639 INFO     {'loss': 0.2448, 'learning_rate': 0.0001, 'epoch': 1.83}
+2025-11-01 11:07:20,013 INFO     Epoch: 1
+2025-11-01 11:07:20,013 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:07:20,013 INFO     {'loss': 0.2335, 'learning_rate': 0.0001, 'epoch': 1.92}
+2025-11-01 11:08:27,619 INFO     Epoch: 2
+2025-11-01 11:08:27,619 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:08:27,619 INFO     {'loss': 0.2359, 'learning_rate': 0.0001, 'epoch': 2.01}
+2025-11-01 11:09:36,644 INFO     Epoch: 2
+2025-11-01 11:09:36,644 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:09:36,644 INFO     {'loss': 0.1969, 'learning_rate': 0.0001, 'epoch': 2.1}
+2025-11-01 11:10:58,984 INFO     Epoch: 2
+2025-11-01 11:10:58,984 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:10:58,984 INFO     {'loss': 0.2319, 'learning_rate': 0.0001, 'epoch': 2.19}
+2025-11-01 11:12:20,538 INFO     Epoch: 2
+2025-11-01 11:12:20,538 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:12:20,538 INFO     {'loss': 0.2314, 'learning_rate': 0.0001, 'epoch': 2.28}
+2025-11-01 11:13:27,976 INFO     Epoch: 2
+2025-11-01 11:13:27,977 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:13:27,977 INFO     {'loss': 0.2058, 'learning_rate': 0.0001, 'epoch': 2.37}
+2025-11-01 11:14:37,067 INFO     Epoch: 2
+2025-11-01 11:14:37,067 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:14:37,067 INFO     {'loss': 0.1968, 'learning_rate': 0.0001, 'epoch': 2.47}
+2025-11-01 11:15:44,136 INFO     Epoch: 2
+2025-11-01 11:15:44,136 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:15:44,136 INFO     {'loss': 0.222, 'learning_rate': 0.0001, 'epoch': 2.56}
+2025-11-01 11:16:44,810 INFO     Epoch: 2
+2025-11-01 11:16:44,810 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:16:44,810 INFO     {'loss': 0.2307, 'learning_rate': 0.0001, 'epoch': 2.65}
+2025-11-01 11:18:05,842 INFO     Epoch: 2
+2025-11-01 11:18:05,842 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:18:05,842 INFO     {'loss': 0.2164, 'learning_rate': 0.0001, 'epoch': 2.74}
+2025-11-01 11:19:28,290 INFO     Epoch: 2
+2025-11-01 11:19:28,290 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:19:28,290 INFO     {'loss': 0.1958, 'learning_rate': 0.0001, 'epoch': 2.83}
+2025-11-01 11:20:35,419 INFO     Epoch: 2
+2025-11-01 11:20:35,419 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:20:35,419 INFO     {'loss': 0.2581, 'learning_rate': 0.0001, 'epoch': 2.92}
+2025-11-01 11:21:33,847 INFO     Epoch: 2
+2025-11-01 11:21:33,847 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 11:21:33,847 INFO     {'train_runtime': 2384.6356, 'train_samples_per_second': 2.2, 'train_steps_per_second': 0.137, 'train_loss': 0.5126863677931852, 'epoch': 2.99}
+2025-11-01 11:21:34,182 INFO     Fine-tuned meta-llama/Llama-2-13b-chat-hf saved to llama_ft/mentalmanip!

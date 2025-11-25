@@ -1,0 +1,55 @@
+2025-11-01 03:41:00,216 INFO     ----------Arguments-----------
+2025-11-01 03:41:00,216 INFO     model = roberta-large
+2025-11-01 03:41:00,216 INFO     mode = train
+2025-11-01 03:41:00,216 INFO     temp = 0.1
+2025-11-01 03:41:00,216 INFO     top_p = 0.5
+2025-11-01 03:41:00,216 INFO     penal = 0.0
+2025-11-01 03:41:00,216 INFO     log_dir = ./logs
+2025-11-01 03:41:00,216 INFO     epoch = 3
+2025-11-01 03:41:00,216 INFO     train_batch_size = 16
+2025-11-01 03:41:00,216 INFO     valid_batch_size = 8
+2025-11-01 03:41:00,216 INFO     lr = 0.0001
+2025-11-01 03:41:00,216 INFO     train_data = mentalmanip
+2025-11-01 03:41:00,217 INFO     eval_data = mentalmanip_con
+2025-11-01 03:41:00,217 INFO     ------------------------------
+
+2025-11-01 03:41:00,236 INFO     -----MentalManip Dataset Information-----
+2025-11-01 03:41:00,237 INFO     Total size = 2915, manipulative:non-manipulative ratio = 2.242
+2025-11-01 03:41:00,237 INFO     Train size = 1749, manipulative:non-manipulative ratio = 2.263
+2025-11-01 03:41:00,238 INFO     Valid size = 583, manipulative:non-manipulative ratio = 2.257
+2025-11-01 03:41:00,238 INFO     Test size = 583, manipulative:non-manipulative ratio = 2.168
+2025-11-01 03:41:00,238 INFO     
+2025-11-01 03:41:00,238 INFO     -----Finetuning Data Size Information-----
+2025-11-01 03:41:00,238 INFO     Train size: 1749
+2025-11-01 03:41:00,238 INFO     Valid size: 583
+2025-11-01 03:41:00,238 INFO     Test size: 583
+2025-11-01 03:41:00,238 INFO     
+2025-11-01 03:42:09,319 INFO     Epoch: 1
+2025-11-01 03:42:09,319 INFO     Best checkpoint: None, Best f1: None
+2025-11-01 03:42:09,319 INFO     {'eval_loss': 0.12921780347824097, 'eval_precision': 0.6858316221765913, 'eval_recall': 0.8267326732673267, 'eval_accuracy': 0.6174957118353345, 'eval_f1': 0.6174957118353345, 'eval_micro_f1': 0.6174957118353345, 'eval_macro_f1': 0.46940516273849603, 'eval_confusion_matrix': [[26, 153], [70, 334]], 'eval_runtime': 12.329, 'eval_samples_per_second': 47.287, 'eval_steps_per_second': 2.028, 'epoch': 1.0}
+2025-11-01 03:43:07,662 INFO     Epoch: 2
+2025-11-01 03:43:07,662 INFO     Best checkpoint: roberta_ft/mentalmanip/checkpoint-37, Best f1: 0.6174957118353345
+2025-11-01 03:43:07,662 INFO     {'eval_loss': nan, 'eval_precision': 0.0, 'eval_recall': 0.0, 'eval_accuracy': 0.307032590051458, 'eval_f1': 0.307032590051458, 'eval_micro_f1': 0.307032590051458, 'eval_macro_f1': 0.23490813648293968, 'eval_confusion_matrix': [[179, 0], [404, 0]], 'eval_runtime': 11.8835, 'eval_samples_per_second': 49.059, 'eval_steps_per_second': 2.104, 'epoch': 2.0}
+2025-11-01 03:44:05,363 INFO     Epoch: 3
+2025-11-01 03:44:05,363 INFO     Best checkpoint: roberta_ft/mentalmanip/checkpoint-37, Best f1: 0.6174957118353345
+2025-11-01 03:44:05,363 INFO     {'eval_loss': nan, 'eval_precision': 0.0, 'eval_recall': 0.0, 'eval_accuracy': 0.307032590051458, 'eval_f1': 0.307032590051458, 'eval_micro_f1': 0.307032590051458, 'eval_macro_f1': 0.23490813648293968, 'eval_confusion_matrix': [[179, 0], [404, 0]], 'eval_runtime': 11.8796, 'eval_samples_per_second': 49.076, 'eval_steps_per_second': 2.104, 'epoch': 3.0}
+2025-11-01 03:44:10,444 INFO     Epoch: 3
+2025-11-01 03:44:10,444 INFO     Best checkpoint: roberta_ft/mentalmanip/checkpoint-37, Best f1: 0.6174957118353345
+2025-11-01 03:44:10,444 INFO     {'train_runtime': 179.0044, 'train_samples_per_second': 29.312, 'train_steps_per_second': 0.62, 'train_loss': 0.4052717191678984, 'epoch': 3.0}
+2025-11-01 03:44:10,929 INFO     
+2025-11-01 03:44:10,929 INFO     -----Test-----
+2025-11-01 03:44:23,244 INFO     Epoch: 3
+2025-11-01 03:44:23,244 INFO     Best checkpoint: roberta_ft/mentalmanip/checkpoint-37, Best f1: 0.6174957118353345
+2025-11-01 03:44:23,244 INFO     {'eval_loss': 0.39007076621055603, 'eval_precision': 0.6859344894026975, 'eval_recall': 0.8922305764411027, 'eval_accuracy': 0.6466552315608919, 'eval_f1': 0.6466552315608919, 'eval_micro_f1': 0.6466552315608919, 'eval_macro_f1': 0.4724769836249912, 'eval_confusion_matrix': [[21, 163], [43, 356]], 'eval_runtime': 12.3139, 'eval_samples_per_second': 47.345, 'eval_steps_per_second': 2.03, 'epoch': 3.0}
+2025-11-01 03:44:23,244 INFO     eval_loss = 0.39007076621055603
+2025-11-01 03:44:23,244 INFO     eval_precision = 0.6859344894026975
+2025-11-01 03:44:23,244 INFO     eval_recall = 0.8922305764411027
+2025-11-01 03:44:23,244 INFO     eval_accuracy = 0.6466552315608919
+2025-11-01 03:44:23,244 INFO     eval_f1 = 0.6466552315608919
+2025-11-01 03:44:23,244 INFO     eval_micro_f1 = 0.6466552315608919
+2025-11-01 03:44:23,244 INFO     eval_macro_f1 = 0.4724769836249912
+2025-11-01 03:44:23,244 INFO     eval_confusion_matrix = [[21, 163], [43, 356]]
+2025-11-01 03:44:23,244 INFO     eval_runtime = 12.3139
+2025-11-01 03:44:23,244 INFO     eval_samples_per_second = 47.345
+2025-11-01 03:44:23,244 INFO     eval_steps_per_second = 2.03
+2025-11-01 03:44:23,244 INFO     epoch = 3.0
