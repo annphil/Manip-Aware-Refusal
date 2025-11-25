@@ -106,6 +106,9 @@ def setup_training(reft_model, tokenizer, model, preference_json_path,
     """  
     Create dataset, collator, and trainer for ReFT training.  
     """  
+    # import os  
+    # os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
     # Create ReftPreferenceDataset  
     train_dataset = pyreft.ReftPreferenceDataset(  
         task="manipulation_refusal",  
@@ -139,7 +142,12 @@ def setup_training(reft_model, tokenizer, model, preference_json_path,
         logging_steps=10,  
         save_strategy="epoch",  
         evaluation_strategy="no",  
-        report_to="none"  
+        report_to="none", 
+        #  Disable DataParallel  
+        dataloader_num_workers=0,  
+        fp16=False,  # Keep fp16 off for ReFT  
+        ddp_find_unused_parameters=False,  
+        remove_unused_columns=False 
     )  
       
     # Create trainer  
@@ -158,8 +166,12 @@ def setup_training(reft_model, tokenizer, model, preference_json_path,
 # ============================================================================  
   
 def main():  
+
+    import os  
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
     # Configuration  
-    CSV_PATH = "experiments/datasets/mentalmanip_con.csv"  
+    CSV_PATH = "../datasets/mentalmanip_con.csv"  
     JSON_PATH = "preference_data.json"  
     MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0" # "meta-llama/Llama-2-7b-chat-hf"  
     LAYERS_TO_INTERVENE = [8] #[15]    
