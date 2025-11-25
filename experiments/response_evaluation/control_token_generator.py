@@ -1,60 +1,55 @@
 import os  
 import torch  
-#from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequenceClassification 
-from transformers import RobertaTokenizer, RobertaForSequenceClassification   
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequenceClassification 
+#from transformers import RobertaTokenizer, RobertaForSequenceClassification   
   
 class ControlTokenGenerator:  
     """Generates responses using RoBERTa for detection and Llama for generation."""  
       
-    def __init__(self, detection_model_path="roberta_ft/mentalmanip",   
-                 generation_model_name="meta-llama/Llama-2-13b-chat-hf", device="cuda"):  
-        """  
-        Initialize with fine-tuned RoBERTa for detection and Llama for generation.  
-          
-        Args:  
-            detection_model_path: Path to fine-tuned RoBERTa model  
-            generation_model_name: Base Llama model for generation  
-            device: Device to load models on  
-        """  
-        self.device = device  
-          
-        # Convert relative path to absolute for RoBERTa model  
-        if not os.path.isabs(detection_model_path):  
-            detection_model_path = os.path.join(  
-                os.path.dirname(__file__),  
-                "../manipulation_detection",  
-                detection_model_path  
+    def __init__(self, detection_model_path="roberta_ft/mentalmanip",     
+             generation_model_name="meta-llama/Llama-2-13b-chat-hf", device="cuda"):    
+        """    
+        Initialize with fine-tuned RoBERTa for detection and Llama for generation.    
+        """    
+        self.device = device    
+            
+        # Convert relative path to absolute for RoBERTa model    
+        if not os.path.isabs(detection_model_path):    
+            detection_model_path = os.path.join(    
+                os.path.dirname(__file__),    
+                "../manipulation_detection",    
+                detection_model_path    
             )  
-          
-        print(f"Loading RoBERTa detection model from: {detection_model_path}")  
-          
-        # Load RoBERTa for manipulation detection 
-        base_roberta_model = "roberta-large"  # or "roberta-base" depending on which you fine-tuned  
-        self.detection_tokenizer = RobertaTokenizer.from_pretrained(base_roberta_model) 
-        #self.detection_tokenizer = AutoTokenizer.from_pretrained(detection_model_path) 
-        self.detection_model = RobertaForSequenceClassification.from_pretrained(detection_model_path) 
-        # self.detection_model = AutoModelForSequenceClassification.from_pretrained(  
-        #     detection_model_path  
-        # ).to(self.device)  
-        # self.detection_model.eval()  
-          
-        print(f"Loading Llama generation model: {generation_model_name}")  
-          
-        # Load Llama for text generation  
-        self.generation_tokenizer = AutoTokenizer.from_pretrained(generation_model_name)  
-          
-        # Set padding token for Llama (REQUIRED)  
-        if self.generation_tokenizer.pad_token is None:  
-            self.generation_tokenizer.pad_token = self.generation_tokenizer.eos_token  
-          
-        self.generation_model = AutoModelForCausalLM.from_pretrained(  
-            generation_model_name,  
-            torch_dtype=torch.float16,  
-            device_map="auto"  
-        )  
-        self.generation_model.eval()  
-          
-        print("Models loaded successfully!")  
+
+        checkpoint_path = os.path.join(detection_model_path, "checkpoint-110")   
+            
+        print(f"Loading RoBERTa detection model from: {checkpoint_path}")   
+
+        self.detection_tokenizer = AutoTokenizer.from_pretrained("roberta-large")  # Base model tokenizer  
+        self.detection_model = AutoModelForSequenceClassification.from_pretrained(  
+            checkpoint_path,  # Load from checkpoint-110  
+            num_labels=2  
+        ) 
+
+        self.detection_model.to(self.device)  
+        self.detection_model.eval()  
+            
+        print(f"Loading Llama generation model: {generation_model_name}")    
+            
+        # Load Llama for text generation (rest of your code remains the same)  
+        self.generation_tokenizer = AutoTokenizer.from_pretrained(generation_model_name)    
+            
+        if self.generation_tokenizer.pad_token is None:    
+            self.generation_tokenizer.pad_token = self.generation_tokenizer.eos_token    
+            
+        self.generation_model = AutoModelForCausalLM.from_pretrained(    
+            generation_model_name,    
+            torch_dtype=torch.float16,    
+            device_map="auto"    
+        )    
+        self.generation_model.eval()    
+            
+        print("Models loaded successfully!") 
       
     def detect_manipulation(self, dialogue):  
         """  
