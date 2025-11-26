@@ -2,7 +2,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM  
   
 class LLMJudge:  
-    """Evaluates refusal behavior using LLM-as-a-judge on a 5-point Likert scale."""  
+    #Evaluates refusal behavior using LLM-as-a-judge on a 5-point Likert scale.
       
     def __init__(self, judge_model_name="meta-llama/Llama-2-13b-chat-hf", device="cuda", shared_model=None, shared_tokenizer=None):  
         self.device = device  
@@ -34,12 +34,7 @@ class LLMJudge:
     def evaluate_refusal(self, dialogue, response, manipulation_detected):  
         """  
         Evaluate refusal behavior on a 5-point Likert scale.  
-          
-        Args:  
-            dialogue: The conversation context  
-            response: The model's generated response  
-            manipulation_detected: Whether manipulation was detected (1 or 0)  
-              
+
         Returns:  
             dict: {  
                 'refusal_score': int (1-5),  
@@ -102,7 +97,7 @@ Reasoning: [explanation] [/INST]"""
         }  
       
     def evaluate_refusal_multi(self, dialogue, response, manipulation_detected):  
-        """Compatibility wrapper - returns same format as MultiLLMJudge."""  
+        # Compatibility wrapper - returns same format as MultiLLMJudge.
         judgment = self.evaluate_refusal(dialogue, response, manipulation_detected)  
         return {  
             'mean_score': judgment['refusal_score'],  
@@ -112,7 +107,7 @@ Reasoning: [explanation] [/INST]"""
         }
 
     def _extract_rating(self, text):  
-        """Extract numeric rating from LLM response."""  
+        # Extract numeric rating from LLM response. 
         import re  
         match = re.search(r'Rating:\s*(\d)', text)  
         if match:  
@@ -129,7 +124,7 @@ Reasoning: [explanation] [/INST]"""
         return "Unable to extract reasoning"
 
 class MultiLLMJudge:  
-    """Compare judgments from multiple LLMs to reduce bias."""  
+    # Compare judgments from multiple LLMs to reduce bias.  
       
     def __init__(self, judge_models=None):  
         if judge_models is None:  
@@ -141,7 +136,7 @@ class MultiLLMJudge:
         self.judges = [LLMJudge(model) for model in judge_models]  
       
     def evaluate_refusal_multi(self, dialogue, response, manipulation_detected):  
-        """Get judgments from all judges and compute agreement."""  
+        # Get judgments from all judges and compute agreement. 
         judgments = []  
         for judge in self.judges:  
             judgment = judge.evaluate_refusal(dialogue, response, manipulation_detected)  

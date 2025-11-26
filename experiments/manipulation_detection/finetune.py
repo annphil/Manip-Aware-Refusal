@@ -72,7 +72,7 @@ if __name__ == '__main__':
     parser.add_argument('--train_batch_size', default=8, type=int)
     parser.add_argument('--valid_batch_size', default=8, type=int)
     parser.add_argument('--lr', default=0.0001, type=float)
-    parser.add_argument('--train_data', default='Dreaddit', type=str)
+    parser.add_argument('--train_data', default='mentalmanip_con', type=str)
     parser.add_argument('--eval_data', default='mentalmanip_con', type=str)
     args = parser.parse_args()
 
@@ -87,17 +87,8 @@ if __name__ == '__main__':
                                      valid_ratio=0.2,
                                      test_ratio=0.2)
 
-    if args.train_data != 'mentalmanip':
-        train_dataset = LoadOtherDataset(file_name='../datasets/'+args.train_data+'/dataset.csv')
-        # Optional: Downsample the training data to 5000 samples to reduce training time
-        if len(train_dataset.df) >= 5000:
-            cutted_size = 5000
-            logging.info(f"-----Downsampling Dataset {args.train_data} to size {cutted_size}-----")
-            train_dataset.df = train_dataset.df.sample(n=cutted_size, random_state=42).reset_index(drop=True)
-        train_data, valid_data = train_test_split(train_dataset.df, test_size=0.2, random_state=42)
-    else:
-        train_data = manip_dataset.df_train
-        valid_data = manip_dataset.df_valid
+    train_data = manip_dataset.df_train
+    valid_data = manip_dataset.df_valid
     test_data = manip_dataset.df_test
 
     logging.info(f"-----Finetuning Data Size Information-----")

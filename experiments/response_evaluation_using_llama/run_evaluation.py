@@ -12,7 +12,7 @@ from manipulation_detection.load_data import LoadManipDataset
 from llm_judge import MultiLLMJudge, LLMJudge
 
 def load_dataset(file_path):  
-        """Load MentalManip dataset and return ONLY test split."""  
+        #Load MentalManip dataset and return ONLY test split.
         manip_dataset = LoadManipDataset(  
             file_name=file_path,  
             train_ratio=0.6,  
@@ -27,17 +27,9 @@ def load_dataset(file_path):
         
         return dialogues, ground_truth_labels
 
-def run_evaluation(dataset_path, output_path, detection_model, generation_model, max_samples=None):    
-    """    
-    Run evaluation with manipulation detection and conditional response generation.    
-    Writes results incrementally after each sample.  
-        
-    Args:    
-        dataset_path: Path to MentalManip CSV file    
-        output_path: Path to save results CSV    
-        max_samples: Maximum number of samples to evaluate (None for all)    
-    """    
-    # Initialize generator  
+def run_evaluation(dataset_path, output_path, detection_model, generation_model, max_samples=None):       
+    #Run evaluation with manipulation detection and conditional response generation.   
+  
     generator = ControlTokenGenerator()  
     evaluator = SimilarityEvaluator() 
 
@@ -56,12 +48,6 @@ def run_evaluation(dataset_path, output_path, detection_model, generation_model,
         ground_truth_labels = ground_truth_labels[:max_samples]    
         
     print(f"Loaded {len(dialogues)} dialogues")    
-        
-    # # Initialize models    
-    # print("Initializing models...")    
-    # generator = ControlTokenGenerator()    
-    # evaluator = SimilarityEvaluator()  
-    # llm_judge = MultiLLMJudge() # LLMJudge()  
       
     # Initialize CSV file with headers  
     with open(output_path, 'w', newline='', encoding='utf-8') as f:  
