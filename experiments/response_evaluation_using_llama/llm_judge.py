@@ -4,20 +4,32 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 class LLMJudge:  
     """Evaluates refusal behavior using LLM-as-a-judge on a 5-point Likert scale."""  
       
-    def __init__(self, judge_model_name="meta-llama/Llama-2-13b-chat-hf", device="cuda"):  
+    def __init__(self, judge_model_name="meta-llama/Llama-2-13b-chat-hf", device="cuda", shared_model=None, shared_tokenizer=None):  
         self.device = device  
         print(f"Loading LLM judge model: {judge_model_name}")  
           
-        self.tokenizer = AutoTokenizer.from_pretrained(judge_model_name)  
-        if self.tokenizer.pad_token is None:  
-            self.tokenizer.pad_token = self.tokenizer.eos_token  
-              
-        self.model = AutoModelForCausalLM.from_pretrained(  
-            judge_model_name,  
-            torch_dtype=torch.float16,  
-            device_map="auto"  
-        )  
-        self.model.eval()  
+        if shared_model is not None and shared_tokenizer is not None:  
+            # Use shared instances  
+            print(f"Using shared model and tokenizer for LLM judge")  
+            self.model = shared_model  
+            self.tokenizer = shared_tokenizer  
+        else:  
+            # Load new instances (original behavior)  
+            print(f"Loading LLM judge model: {judge_model_name}")  
+            self.tokenizer = AutoTokenizer.from_pretrained(  
+                judge_model_name,  
+                use_fast=False  
+            ) 
+        #self.tokenizer = AutoTokenizer.from_pretrained(judge_model_name, use_fast=False)  
+            if self.tokenizer.pad_token is None:  
+                self.tokenizer.pad_token = self.tokenizer.eos_token  
+                
+            self.model = AutoModelForCausalLM.from_pretrained(  
+                judge_model_name,  
+                torch_dtype=torch.float16,  
+                device_map="auto"  
+            )  
+            self.model.eval()  
       
     def evaluate_refusal(self, dialogue, response, manipulation_detected):  
         """  
@@ -89,6 +101,16 @@ Reasoning: [explanation] [/INST]"""
             'reasoning': reasoning  
         }  
       
+    def evaluate_refusal_multi(self, dialogue, response, manipulation_detected):  
+        """Compatibility wrapper - returns same format as MultiLLMJudge."""  
+        judgment = self.evaluate_refusal(dialogue, response, manipulation_detected)  
+        return {  
+            'mean_score': judgment['refusal_score'],  
+            'individual_scores': [judgment['refusal_score']],  
+            'agreement': 0,  # Perfect agreement with itself  
+            'judgments': [judgment]  
+        }
+
     def _extract_rating(self, text):  
         """Extract numeric rating from LLM response."""  
         import re  

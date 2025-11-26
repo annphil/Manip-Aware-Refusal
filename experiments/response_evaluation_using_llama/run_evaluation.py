@@ -9,7 +9,7 @@ import sys
 import os  
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))  
 from manipulation_detection.load_data import LoadManipDataset
-from llm_judge import MultiLLMJudge
+from llm_judge import MultiLLMJudge, LLMJudge
 
 def load_dataset(file_path):  
         """Load MentalManip dataset and return ONLY test split."""  
@@ -37,6 +37,16 @@ def run_evaluation(dataset_path, output_path, detection_model, generation_model,
         output_path: Path to save results CSV    
         max_samples: Maximum number of samples to evaluate (None for all)    
     """    
+    # Initialize generator  
+    generator = ControlTokenGenerator()  
+    evaluator = SimilarityEvaluator() 
+
+    # Share the generation model with LLM judge  
+    llm_judge = LLMJudge(  
+        shared_model=generator.generation_model,  
+        shared_tokenizer=generator.tokenizer 
+    )
+
     # Load dataset    
     print(f"Loading dataset from: {dataset_path}")    
     dialogues, ground_truth_labels = load_dataset(dataset_path)    
@@ -47,11 +57,11 @@ def run_evaluation(dataset_path, output_path, detection_model, generation_model,
         
     print(f"Loaded {len(dialogues)} dialogues")    
         
-    # Initialize models    
-    print("Initializing models...")    
-    generator = ControlTokenGenerator()    
-    evaluator = SimilarityEvaluator()  
-    llm_judge = MultiLLMJudge()  
+    # # Initialize models    
+    # print("Initializing models...")    
+    # generator = ControlTokenGenerator()    
+    # evaluator = SimilarityEvaluator()  
+    # llm_judge = MultiLLMJudge() # LLMJudge()  
       
     # Initialize CSV file with headers  
     with open(output_path, 'w', newline='', encoding='utf-8') as f:  
@@ -59,7 +69,9 @@ def run_evaluation(dataset_path, output_path, detection_model, generation_model,
             'dialogue', 'ground_truth_label', 'predicted_label',  
             'baseline_response', 'control_response', 'cosine_similarity',  
             'bert_precision', 'bert_recall', 'bert_f1',  
-            'baseline_refusal_score', 'control_refusal_score',   
+            'baseline_refusal_score', 'control_refusal_score',  
+            'baseline_individual_scores', 'control_individual_scores',
+            'baseline_agreement', 'control_agreement',  
             'baseline_reasoning', 'control_reasoning'  
         ])  
         writer.writeheader()  
@@ -130,14 +142,14 @@ def run_evaluation(dataset_path, output_path, detection_model, generation_model,
 
             # LLM-as-judge evaluation  
             baseline_judgment = llm_judge.evaluate_refusal_multi(dialogue, baseline_response, predicted_label)  
-            baseline_refusal_scores.append(baseline_judgment['refusal_score']) 
+            baseline_refusal_scores.append(baseline_judgment['mean_score']) 
             result['baseline_refusal_score'] = baseline_judgment['mean_score']  
             result['baseline_individual_scores'] = baseline_judgment['individual_scores']  
             result['baseline_agreement'] = baseline_judgment['agreement']  
             
             # Evaluate control response  
             control_judgment = llm_judge.evaluate_refusal_multi(dialogue, control_response, predicted_label)  
-            control_refusal_scores.append(control_judgment['refusal_score'])
+            control_refusal_scores.append(control_judgment['mean_score'])
             result['control_refusal_score'] = control_judgment['mean_score']  
             result['control_individual_scores'] = control_judgment['individual_scores']  
             result['control_agreement'] = control_judgment['agreement'] 
@@ -156,7 +168,9 @@ def run_evaluation(dataset_path, output_path, detection_model, generation_model,
                 'dialogue', 'ground_truth_label', 'predicted_label',  
                 'baseline_response', 'control_response', 'cosine_similarity',  
                 'bert_precision', 'bert_recall', 'bert_f1' ,
-                'baseline_refusal_score', 'control_refusal_score',   
+                'baseline_refusal_score', 'control_refusal_score',  
+                'baseline_individual_scores', 'control_individual_scores',
+                'baseline_agreement', 'control_agreement',     
                 'baseline_reasoning', 'control_reasoning'
             ])  
             writer.writerow(result)  
@@ -191,7 +205,7 @@ def run_evaluation(dataset_path, output_path, detection_model, generation_model,
             print(f"Average control refusal score: {avg_control_refusal:.2f}/5.0")  
             print(f"Refusal improvement (control - baseline): {refusal_improvement:+.2f}")  
             print(f"Samples evaluated by LLM judge: {len(baseline_refusal_scores)}")   
-            
+
     else:    
         print("\nNo manipulation detected in any samples - no similarity metrics computed")
   
