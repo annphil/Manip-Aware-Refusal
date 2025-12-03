@@ -130,7 +130,7 @@ def run_reft_evaluation():
     # Load preference dataset for baseline responses - fixed path  
     preference_data = []  
     # preference_datasets/
-    with open("./preference_datasets_hardcoded/preference_data_test.json", "r") as f:  
+    with open("./preference_datasets/preference_data_test_cleaned.json", "r") as f:  
         preference_data = json.load(f)  
       
     # Create mapping from dialogue to baseline response  

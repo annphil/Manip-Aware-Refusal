@@ -29,13 +29,12 @@ def setup_reft_model(model_name, layers_to_intervene=[8]):
     return reft_model, tokenizer, model  
   
 def train_reft():  
-    """Train ReFT model using preference dataset."""  
     # Force single GPU to avoid DataParallel issues  
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"  
       
     # Configuration  
-    # CHANGE TO "./preference_datasets/preference_data_train.json"
-    JSON_PATH = "./preference_datasets_hardcoded/preference_data_train.json"  
+    # Hardcoded data - "./preference_datasets_hardcoded/preference_data_train.json"
+    JSON_PATH = "./preference_datasets/preference_data_train_cleaned.json"  
     MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"  
     LAYERS_TO_INTERVENE = [8]  
       
