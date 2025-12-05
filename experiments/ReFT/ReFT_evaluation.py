@@ -6,6 +6,15 @@ import json
 import sys  
 import os  
 from tqdm import tqdm  
+import logging  
+  
+# Setup logging  
+logging.basicConfig(  
+    level=logging.INFO,  
+    filename='reft_evaluation.log',  
+    filemode='w',  
+    format='%(asctime)s - %(levelname)s - %(message)s'  
+)  
   
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))  
 from manipulation_detection.load_data import LoadManipDataset  
@@ -13,11 +22,11 @@ from response_evaluation_using_llama.similarity_evaluator import SimilarityEvalu
 from response_evaluation_using_llama.llm_judge import MultiLLMJudge  
   
 class ReFTGenerator:  
-    # Generate responses using trained ReFT model. 
+    """Generate responses using trained ReFT model."""  
       
     def __init__(self, reft_model_path="./manipulation_reft_model"):  
         self.device = "cuda"  
-        self.model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"  
+        self.model_name = "meta-llama/Llama-2-7b-chat-hf"  # Updated to Llama-7B  
           
         # Load base model with single GPU device  
         self.model = transformers.AutoModelForCausalLM.from_pretrained(  
@@ -32,27 +41,36 @@ class ReFTGenerator:
             self.tokenizer.pad_token = self.tokenizer.eos_token  
           
         # Configure ReFT interventions (same as training)  
+        LAYERS_TO_INTERVENE = [15, 20, 25]  # Match training configuration  
         reft_config = pyreft.ReftConfig(representations=[{  
-            "layer": 8,  # Same layer used in training  
+            "layer": layer,  
             "component": "block_output",  
-            "low_rank_dimension": 4,  
+            "low_rank_dimension": 64,  # Match training  
             "intervention": pyreft.LoreftIntervention(  
                 embed_dim=self.model.config.hidden_size,  
-                low_rank_dimension=4  
+                low_rank_dimension=64  # Match training  
             )  
-        }])  
+        } for layer in LAYERS_TO_INTERVENE])  
           
         # Create ReFT model  
         self.reft_model = pyreft.get_reft_model(self.model, reft_config)  
           
         # Load trained intervention parameters  
         self.reft_model.load_intervention(reft_model_path)  
-        self.reft_model.eval()  
           
+        # Debug  
+        for name, param in self.reft_model.interventions.items():  
+            if hasattr(param, 'shape'):  
+                logging.info(f"Loaded parameter {name}: {param.shape}")  
+            else:  
+                logging.info(f"Loaded intervention {name}: {type(param).__name__}")  
+          
+        self.reft_model.eval()  
+        logging.info(f"ReFT model loaded successfully from {reft_model_path}")  
         print(f"ReFT model loaded successfully from {reft_model_path}")  
       
     def determine_next_speaker(self, dialogue):  
-        # Determine who should speak next based on dialogue. 
+        """Determine who should speak next based on dialogue."""  
         lines = [line.strip() for line in dialogue.split('\n') if line.strip()]  
         if not lines:  
             return "Person2"  
@@ -64,7 +82,7 @@ class ReFTGenerator:
             return "Person1"  
       
     def generate_response(self, dialogue):  
-        # Generate response using ReFT model with role-playing format.
+        """Generate response using ReFT model with role-playing format."""  
         next_speaker = self.determine_next_speaker(dialogue)  
           
         # Role-playing prompt format  
@@ -77,21 +95,24 @@ Dialogue:
           
         # Tokenize input  
         inputs = self.tokenizer(  
-            prompt,  
-            return_tensors="pt",  
-            truncation=True,  
+            prompt,   
+            return_tensors="pt",   
+            truncation=True,   
             max_length=2048  
         ).to(self.device)  
           
-        # Generate response with ReFT 
+        # Generate response with ReFT  
         with torch.no_grad():  
-            base_unit_location = len(inputs["input_ids"][0]) - 1  
+            base_unit_location = inputs["input_ids"].shape[-1] - 1  
+              
             _, reft_response = self.reft_model.generate(  
                 inputs,  
                 unit_locations={"sources->base": (None, [[[base_unit_location]]])},  
                 intervene_on_prompt=True,  
-                max_new_tokens=50,  # Reduced for stability  
-                do_sample=False,  # Greedy decoding for consistency  
+                max_new_tokens=150,  # Increased for better responses  
+                temperature=0.7,  # Enable sampling for diversity  
+                top_p=0.9,  
+                do_sample=True,  
                 pad_token_id=self.tokenizer.eos_token_id,  
                 early_stopping=False  
             )  
@@ -111,9 +132,7 @@ Dialogue:
         return response_text  
   
 def run_reft_evaluation():  
-    # Run ReFT evaluation with similarity metrics and LLM judge 
-      
-    # Force single GPU to avoid device conflicts  
+    """Run ReFT evaluation with similarity metrics and LLM judge."""  
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"  
       
     # Load test dataset (same splits as other modules)  
@@ -125,11 +144,11 @@ def run_reft_evaluation():
     )  
       
     test_data = manip_dataset.df_test  
+    logging.info(f"Loaded {len(test_data)} test samples")  
     print(f"Loaded {len(test_data)} test samples")  
       
-    # Load preference dataset for baseline responses - fixed path  
+    # Load preference dataset for baseline responses  
     preference_data = []  
-    # preference_datasets/
     with open("./preference_datasets/preference_data_test_cleaned.json", "r") as f:  
         preference_data = json.load(f)  
       
@@ -143,89 +162,7 @@ def run_reft_evaluation():
     # Initialize models  
     reft_generator = ReFTGenerator()  
     evaluator = SimilarityEvaluator()  
-      
-    # Use MultiLLMJudge with both models  
     llm_judge = MultiLLMJudge()  
       
     # Results storage  
-    results = []  
-    reft_refusal_scores = []  
-    cosine_sims = []  
-    bert_f1s = []  
-      
-    print("Evaluating ReFT responses...")  
-      
-    for i, row in tqdm(test_data.iterrows(), total=len(test_data), desc="Processing samples"):  
-        try:  
-            dialogue = row['Dialogue']  
-            true_label = row['Manipulative']  
-              
-            # Generate ReFT response  
-            reft_response = reft_generator.generate_response(dialogue)  
-              
-            # Get baseline response from preference dataset  
-            baseline_response = dialogue_to_baseline.get(dialogue, "I'd be happy to help you with this.")  
-              
-            # Compute similarity metrics  
-            cosine_sim = evaluator.compute_cosine_similarity(baseline_response, reft_response)  
-            bert_scores = evaluator.compute_bert_score(baseline_response, reft_response)  
-            bert_p, bert_r, bert_f1 = bert_scores["precision"], bert_scores["recall"], bert_scores["f1"]  
-              
-            # Evaluate with both LLM judges  
-            judgment = llm_judge.evaluate_refusal_multi(dialogue, reft_response, true_label)  
-              
-            # Store results  
-            result = {  
-                'dialogue': dialogue,  
-                'true_label': true_label,  
-                'reft_response': reft_response,  
-                'baseline_response': baseline_response,  
-                'cosine_similarity': cosine_sim,  
-                'bert_precision': bert_p,  
-                'bert_recall': bert_r,  
-                'bert_f1': bert_f1,  
-                'reft_mean_score': judgment['mean_score'],  
-                'reft_individual_scores': judgment['individual_scores'],  
-                'reft_agreement': judgment['agreement']  
-            }  
-              
-            results.append(result)  
-              
-            # Track metrics for summary  
-            if true_label == 1:  # Manipulative cases  
-                reft_refusal_scores.append(judgment['mean_score'])  
-              
-            if cosine_sim is not None:  
-                cosine_sims.append(cosine_sim)  
-              
-            if bert_f1 is not None:  
-                bert_f1s.append(bert_f1)  
-                  
-        except Exception as e:  
-            print(f"Error processing sample {i}: {e}")  
-            continue  
-      
-    # Save results  
-    df = pd.DataFrame(results)  
-    df.to_csv("./reft_evaluation_results.csv", index=False)  
-      
-    # Print summary  
-    print(f"\n=== ReFT Evaluation Summary ===")  
-    print(f"Total samples: {len(results)}")  
-      
-    if reft_refusal_scores:  
-        avg_refusal_score = sum(reft_refusal_scores) / len(reft_refusal_scores)  
-        print(f"Average ReFT refusal score (manipulative cases): {avg_refusal_score:.2f}/5.0")  
-      
-    if cosine_sims:  
-        avg_cosine_sim = sum(cosine_sims) / len(cosine_sims)  
-        print(f"Average cosine similarity: {avg_cosine_sim:.4f}")  
-      
-    if bert_f1s:  
-        avg_bert_f1 = sum(bert_f1s) / len(bert_f1s)  
-        print(f"Average BERT F1: {avg_bert_f1:.4f}")  
-      
-    print(f"Results saved to: ./reft_evaluation_results.csv")  
-  
-if __name__ == "__main__":  
-    run_reft_evaluation()
+    results = [] 
