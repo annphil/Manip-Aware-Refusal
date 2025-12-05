@@ -30,7 +30,7 @@ def setup_reft_model(model_name, layers_to_intervene=[15, 20, 25]):
     reft_model.print_trainable_parameters()  
       
     return reft_model, tokenizer, model  
-  
+    
 def train_reft():  
     """Train ReFT model with improved configuration."""  
     # Force single GPU to avoid DataParallel issues  
@@ -39,7 +39,7 @@ def train_reft():
     # Configuration  
     JSON_PATH_TRAIN = "./preference_datasets/preference_data_train_cleaned.json"
     JSON_PATH_VALID = "./preference_datasets/preference_data_valid_cleaned.json"
-    MODEL_NAME = "meta-llama/Llama-2-7b-chat-hf"  # Updated to Llama-7B  
+    MODEL_NAME = "meta-llama/Llama-2-7b-chat-hf"  # Updated   
     LAYERS_TO_INTERVENE = [15, 20, 25]  # Multi-layer for larger model  
       
     # Setup model  
@@ -54,7 +54,7 @@ def train_reft():
         data_split="train",  
         num_interventions=len(LAYERS_TO_INTERVENE),  
         position="f1+l1+m1",  # First, last, and middle tokens  
-        share_weights=True,  
+        share_weights=True,  # TRY DIFFERENT WEIGHTS FOR EACH POSITION LATER
         input_field="input",  
         instruction_field="instruction",  
         chosen_output_field="chosen_output",  
@@ -81,7 +81,8 @@ def train_reft():
     #     print(f"Sample: {valid_dataset[0]}")
       
     # Setup training  
-    data_collator_fn = DataCollatorForSeq2Seq(  
+    # A data collator is the component that prepares a batch of varied-length samples into uniform tensors for GPU processing
+    data_collator_fn = DataCollatorForSeq2Seq(   # DataCollatorForSeq2Seq (Used in ReFT): Handles padding and prepares sequences for standard encoder-decoder or causal models.
         tokenizer=tokenizer,  
         model=base_model,  
         label_pad_token_id=-100,  

@@ -1,3 +1,6 @@
+
+
+
 import torch  
 import transformers  
 import pyreft  
@@ -6,6 +9,15 @@ import json
 import sys  
 import os  
 from tqdm import tqdm  
+import logging  
+  
+# Setup logging  
+logging.basicConfig(  
+    level=logging.INFO,  
+    filename='reft_evaluation.log',  
+    filemode='w',  
+    format='%(asctime)s - %(levelname)s - %(message)s'  
+)  
   
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))  
 from manipulation_detection.load_data import LoadManipDataset  
@@ -14,16 +26,15 @@ from response_evaluation_using_llama.llm_judge import MultiLLMJudge
   
 class ReFTGenerator:  
     # Generate responses using trained ReFT model. 
-      
     def __init__(self, reft_model_path="./manipulation_reft_model"):  
         self.device = "cuda"  
-        self.model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"  
+        self.model_name = "meta-llama/Llama-2-7b-chat-hf"  # Updated from tiny_llama to Llama-7B  
           
         # Load base model with single GPU device  
         self.model = transformers.AutoModelForCausalLM.from_pretrained(  
             self.model_name,  
             torch_dtype=torch.bfloat16,  
-            device_map=None  # Disable auto device mapping  
+            device_map="auto"  # Changed from None to auto  
         ).to(self.device)  
           
         # Load tokenizer  
@@ -31,34 +42,37 @@ class ReFTGenerator:
         if self.tokenizer.pad_token is None:  
             self.tokenizer.pad_token = self.tokenizer.eos_token  
           
-        # Configure ReFT interventions (same as training) 
-        LAYERS_TO_INTERVENE = [8] 
+        # Configure ReFT interventions (same as training)  
+        LAYERS_TO_INTERVENE = [15, 20, 25]  
         reft_config = pyreft.ReftConfig(representations=[{  
-            "layer": layer,  # Same layer used in training  
+            "layer": layer,  
             "component": "block_output",  
-            "low_rank_dimension": 4,  
+            "low_rank_dimension": 64,   
             "intervention": pyreft.LoreftIntervention(  
                 embed_dim=self.model.config.hidden_size,  
-                low_rank_dimension=4  
+                low_rank_dimension=64   
             )  
-        }for layer in LAYERS_TO_INTERVENE])  
+        } for layer in LAYERS_TO_INTERVENE])  
           
         # Create ReFT model  
         self.reft_model = pyreft.get_reft_model(self.model, reft_config)  
           
         # Load trained intervention parameters  
-        self.reft_model.load_intervention(reft_model_path) 
-        # Debug 
+        self.reft_model.load_intervention(reft_model_path)  
+          
+        # Debug  
         for name, param in self.reft_model.interventions.items():  
             if hasattr(param, 'shape'):  
-                print(f"Loaded parameter {name}: {param.shape}")  
+                logging.info(f"Loaded parameter {name}: {param.shape}")  
             else:  
-                print(f"Loaded intervention {name}: {type(param).__name__}")
-        self.reft_model.eval() 
+                logging.info(f"Loaded intervention {name}: {type(param).__name__}")  
+          
+        self.reft_model.eval()  
+        logging.info(f"ReFT model loaded successfully from {reft_model_path}")  
         print(f"ReFT model loaded successfully from {reft_model_path}")  
       
     def determine_next_speaker(self, dialogue):  
-        # Determine who should speak next based on dialogue. 
+        """Determine who should speak next based on dialogue."""  
         lines = [line.strip() for line in dialogue.split('\n') if line.strip()]  
         if not lines:  
             return "Person2"  
@@ -70,10 +84,9 @@ class ReFTGenerator:
             return "Person1"  
       
     def generate_response(self, dialogue):  
-        # Generate response using ReFT model with role-playing format.
+        """Generate response using ReFT model with role-playing format."""  
         next_speaker = self.determine_next_speaker(dialogue)  
-          
-        # Role-playing prompt format  
+
         prompt = f"""[INST] You are {next_speaker} in the following dialogue. Generate a natural response as {next_speaker}.  
   
 Dialogue:  
@@ -89,19 +102,18 @@ Dialogue:
             max_length=2048  
         ).to(self.device)  
           
-        # Generate response with ReFT 
-        with torch.no_grad():
+        # Generate response with ReFT  
+        with torch.no_grad():  
             base_unit_location = inputs["input_ids"].shape[-1] - 1  
-            #base_unit_location = len(inputs["input_ids"][0]) - 1  
+              
             _, reft_response = self.reft_model.generate(  
                 inputs,  
                 unit_locations={"sources->base": (None, [[[base_unit_location]]])},  
                 intervene_on_prompt=True,  
-                max_new_tokens= 100, # 50,  # Reduced for stability  # 1st try
-                temperature=0.8, # new
-                do_sample= True, # False,  # Greedy decoding for consistency  # 1st try
-                top_p=0.9, # new
-                gradient_accumulation_steps=4,  # Effective batch size = 2*4 = 8 # new
+                max_new_tokens=100,  
+                temperature=0.8,  
+                do_sample=True,  
+                top_p=0.9,  
                 pad_token_id=self.tokenizer.eos_token_id,  
                 early_stopping=False  
             )  
@@ -121,8 +133,8 @@ Dialogue:
         return response_text  
   
 def run_reft_evaluation():  
-    # Run ReFT evaluation with similarity metrics and LLM judge 
-    
+    # Run ReFT evaluation with similarity metrics and LLM judge.
+      
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"  
       
     # Load test dataset (same splits as other modules)  
@@ -132,22 +144,62 @@ def run_reft_evaluation():
         valid_ratio=0.2,  
         test_ratio=0.2  
     )  
-      
+  
     test_data = manip_dataset.df_test  
     print(f"Loaded {len(test_data)} test samples")  
       
-    # Load preference dataset for baseline responses - fixed path  
+    # Load preference dataset for baseline responses  
     preference_data = []  
-    # preference_datasets/
     with open("./preference_datasets/preference_data_test_cleaned.json", "r") as f:  
         preference_data = json.load(f)  
+    
+    def debug_preference_data(preference_data, test_data, num_samples=2):  
+        """Debug the first few samples to understand the format."""  
+        print("=== Debugging Preference Data Format ===") 
+        print(preference_data[:num_samples]) 
+        print("=== Debugging Test Data Format ===")
+        print(test_data[:num_samples])
+    debug_preference_data(preference_data, test_data)
       
     # Create mapping from dialogue to baseline response  
+    # dialogue_to_baseline = {}  
+    # for item in preference_data:  
+    #     # Extract dialogue from instruction field  
+    #     dialogue = item["instruction"].split("Dialogue:\n")[-1].split("\n\n")[0]  
+    #     dialogue_to_baseline[dialogue] = item["chosen_output"]  
+
+    # Create mapping from dialogue to baseline response
     dialogue_to_baseline = {}  
-    for item in preference_data:  
-        # Extract dialogue from instruction field  
-        dialogue = item["instruction"].split("Dialogue:\n")[-1].split("\n\n")[0]  
-        dialogue_to_baseline[dialogue] = item["chosen_output"]  
+    failed_extractions = 0  
+    
+    for i, item in enumerate(preference_data):  
+        try:  
+            # More robust dialogue extraction with error handling  
+            instruction = item["instruction"]  
+            
+            if "Dialogue:\n" in instruction:  
+                dialogue = instruction.split("Dialogue:\n")[-1]  
+                # Split on first double newline or end of string   
+                dialogue = dialogue.split("\n\n")[0] if "\n\n" in dialogue else dialogue  
+                # Remove any remaining [/INST] tags  
+                if "[/INST]" in dialogue:  
+                    dialogue = dialogue.split("[/INST]")[0].strip()
+            else:  
+                # Fallback: use entire instruction as dialogue  
+                dialogue = instruction  
+                
+            if dialogue.strip():  # Only add non-empty dialogues  
+                dialogue_to_baseline[dialogue] = item["chosen_output"]  
+            else:  
+                failed_extractions += 1  
+                
+        except Exception as e:  
+            failed_extractions += 1  
+            if failed_extractions <= 5:  # Log first 5 failures  
+                print(f"Failed to extract dialogue from item {i}: {e}")  
+                print(f"Instruction: {item['instruction'][:100]}...")  
+    
+    print(f"Successfully mapped {len(dialogue_to_baseline)} dialogues, failed {failed_extractions}")
       
     # Initialize models  
     reft_generator = ReFTGenerator()  
@@ -164,24 +216,40 @@ def run_reft_evaluation():
       
     print("Evaluating ReFT responses...")  
       
-    for i, row in tqdm(test_data.iterrows(), total=len(test_data), desc="Processing samples"):  
+    for idx, row in tqdm(test_data.iterrows(), total=len(test_data), desc="Processing samples"): 
         try:  
             dialogue = row['Dialogue']  
             true_label = row['Manipulative']  
+            
+            # Get baseline response with error handling  
+            baseline_response = dialogue_to_baseline.get(dialogue, "")  
+            if not baseline_response:  
+                print(f"Warning: No baseline response found for sample {idx}, skipping")  
+                continue   
               
-            # Generate ReFT response  
-            reft_response = reft_generator.generate_response(dialogue)  
-              
-            # Get baseline response from preference dataset  
-            baseline_response = dialogue_to_baseline.get(dialogue, "I'd be happy to help you with this.")  
-              
+            print("Before generating ReFT response")
+            # reft_response = reft_generator.generate_response(dialogue)  
+            try:  
+                reft_response = reft_generator.generate_response(dialogue)  
+                if not reft_response or reft_response.strip() == "":  
+                    logging.warning(f"Empty ReFT response for sample {idx}")  
+                    continue  
+            except Exception as e:  
+                logging.error(f"ReFT generation failed for sample {idx}: {e}")  
+                continue
+            print("After generating ReFT response")
+
             # Compute similarity metrics  
+            print("Before computing similarity and Bert metrics")
             cosine_sim = evaluator.compute_cosine_similarity(baseline_response, reft_response)  
             bert_scores = evaluator.compute_bert_score(baseline_response, reft_response)  
             bert_p, bert_r, bert_f1 = bert_scores["precision"], bert_scores["recall"], bert_scores["f1"]  
-              
-            # Evaluate with both LLM judges  
-            judgment = llm_judge.evaluate_refusal_multi(dialogue, reft_response, true_label)  
+            print("After computing similarity and Bert metrics")              
+
+            # Evaluate with both LLM judges - THIS IS THE KEY FIX  
+            print("Before LLM judge evaluation")
+            judgment = llm_judge.evaluate_refusal_multi(dialogue, reft_response, true_label) 
+            print("Before LLM judge evaluation") 
               
             # Store results  
             result = {  
@@ -211,7 +279,7 @@ def run_reft_evaluation():
                 bert_f1s.append(bert_f1)  
                   
         except Exception as e:  
-            print(f"Error processing sample {i}: {e}")  
+            print(f"Error processing sample {idx}: {e}")  
             continue  
       
     # Save results  
